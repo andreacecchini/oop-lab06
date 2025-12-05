@@ -1,10 +1,13 @@
 package it.unibo.generics.graph.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Queue;
 import java.util.Set;
 
 import it.unibo.generics.graph.api.Graph;
@@ -43,8 +46,52 @@ final public class GraphImpl<N> implements Graph<N> {
 
     @Override
     public List<N> getPath(N source, N target) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPath'");
+        if (source == null || target == null) {
+            return null;
+        }
+        if (!this.edges.containsKey(source) || !this.edges.containsKey(target)) {
+            return null;
+        }
+        if (source.equals(target)) {
+            return List.of(source);
+        }
+        // BFS to find path
+        final Queue<N> queue = new LinkedList<>();
+        final Map<N, N> predecessors = new HashMap<>();
+        final Set<N> visited = new HashSet<>();
+        
+        queue.add(source);
+        visited.add(source);
+        
+        while (!queue.isEmpty()) {
+            final N current = queue.poll();
+            for (final N neighbor : this.edges.getOrDefault(current, Set.of())) {
+                if (!visited.contains(neighbor)) {
+                    visited.add(neighbor);
+                    predecessors.put(neighbor, current);
+                    if (neighbor.equals(target)) {
+                        // Found target, reconstruct path
+                        return reconstructPath(source, target, predecessors);
+                    }
+                    queue.add(neighbor);
+                }
+            }
+        }
+        // No path found
+        return null;
+    }
+
+    private List<N> reconstructPath(final N source, final N target, final Map<N, N> predecessors) {
+        final List<N> path = new ArrayList<>();
+        N current = target;
+        while (current != null) {
+            path.add(0, current);
+            if (current.equals(source)) {
+                break;
+            }
+            current = predecessors.get(current);
+        }
+        return path;
     }
 
     // private method, it is impossible for the user to cause heap pollution...
