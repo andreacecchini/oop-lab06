@@ -1,6 +1,7 @@
 package it.unibo.generics.graph.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -85,12 +86,13 @@ final public class GraphImpl<N> implements Graph<N> {
         final List<N> path = new ArrayList<>();
         N current = target;
         while (current != null) {
-            path.add(0, current);
+            path.add(current);
             if (current.equals(source)) {
                 break;
             }
             current = predecessors.get(current);
         }
+        Collections.reverse(path);
         return path;
     }
 
