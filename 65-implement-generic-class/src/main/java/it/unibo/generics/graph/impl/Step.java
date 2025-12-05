@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Represent a step in a graph path.
+ * Represents a step in a graph path.
  *
  * @param <N> node's type.
  */
